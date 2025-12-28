@@ -14,7 +14,6 @@ load_dotenv()
 app = FastAPI()
 
 # --- 1. CONFIGURATION ---
-# TODO: Paste your Google Gemini API Key here inside the quotes
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # Configure the AI
@@ -44,7 +43,7 @@ class Pipeline(BaseModel):
     nodes: List[PipelineNode]
     edges: List[PipelineEdge]
 
-# --- 4. ENDPOINT A: THE DAG CHECKER (Required) ---
+# 4. ENDPOINT A: THE DAG CHECKER 
 @app.post("/pipelines/parse")
 async def parse_pipeline(pipeline: Pipeline):
     num_nodes = len(pipeline.nodes)
@@ -64,7 +63,7 @@ async def parse_pipeline(pipeline: Pipeline):
         "is_dag": is_dag,
     }
 
-# --- 5. ENDPOINT B: THE AI RUNNER (The Fix) ---
+# 5. ENDPOINT B: THE AI RUNNER
 @app.post("/pipelines/execute")
 async def execute_pipeline(pipeline: Pipeline):
     try:
@@ -82,8 +81,8 @@ async def execute_pipeline(pipeline: Pipeline):
                 input_text = node.data['label']
                 break
 
-        # 2. Call Google Gemini
-        # We use 'gemini-1.5-flash' as it is the current standard.
+        # 2. Calling Google Gemini
+        # We are using 'gemini-1.5-flash'
         try:
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(input_text)
